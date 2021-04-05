@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script type="text/javascript" src="../static/apicall.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <title>GITHUB WEBHOOK!</title>
+  </head>
+  <body>
+    <h1>!!! GITHUB WEBHOOK !!! </h1>
+    <div>{%for f in data%}
+      {% if f['action']=='push' %}
+        <p><h5><b>"{{f['author']}}"</b> pushed to branch <b>"{{f['tobranch']}}"</b> at {{f['timestamp']}}</h5></p>    
+      
+      {% elif f['action'] == 'pull_request' %}
+        <p>
+          <h5>{% if f['status']=='opened'%}<b>"{{f['author']}}"</b> submitted a pull request from <b>"{{f['frombranch']}}"</b> to <b>"{{f['tobranch']}}"</b> at {{f['timestamp']}}</h5>
+          
+        </p>    
+            
+            
+            {% elif f['status']=='closed'%}
+                {% if f['merged'] == True %}   
+                <p><h5><b>"{{f['author']}}"</b> merged branch <b>"{{f['frombranch']}}"</b> to <b>"{{f['tobranch']}}"</b> at {{f['timestamp']}}</h5></p>
+                {% elif f['merged']== False %}
+                <p><h5>
+                  <b>"{{f['author']}}"</b> closed the pull request at {{f['timestamp']}}
+                </h5></p>
+                {% endif %}
+            {% endif %}
+      {% endif %}
+      
+      {% endfor %}</div>
+
+  
+  </body>
+</html>
