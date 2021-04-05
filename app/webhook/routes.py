@@ -6,13 +6,10 @@ webhook = Blueprint('Webhook', __name__, url_prefix='/webhook')
 
 @webhook.route('/')
 def index():
-    data=mongo.db.github.find()
-    print(data)    
+    data=mongo.db.github.find()    
 
     return render_template('index.html',data=data)
-@webhook.route('/api')
-def api():
-    return {'harshit':{'status':'ok'}}
+
 
 
 @webhook.route('/receiver', methods=["POST"])
@@ -24,13 +21,13 @@ def receiver():
         if action == "push":
             info=request.get_json()
             
-            print(type(info))
+            
             if info['commits'][0]['distinct'] == True:
                 
                 requestId=info['commits'][0]["id"]
                 author=info['commits'][0]["author"]["name"]
-                timeStamp=info['commits'][0]["timestamp"]
-                # timeStamp=datetime.strptime(timeStamp,"%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %I:%M:%S %p')
+                timeStamp=info['commits'][0]["timestamp"]    
+
                 toBranch=info['ref']
                 toBranch=toBranch.split('/')
                 toBranch=toBranch[2]
