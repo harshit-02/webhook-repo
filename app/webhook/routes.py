@@ -25,7 +25,7 @@ def receiver():
             if info['commits'][0]['distinct'] == True:
                 
                 requestId=info['commits'][0]["id"]
-                author=info['commits'][0]["author"]["name"]
+                author=info['pusher']["name"]
                 timeStamp=info['commits'][0]["timestamp"]    
 
                 toBranch=info['ref']
@@ -52,7 +52,7 @@ def receiver():
                 fromBranch=info['pull_request']['head']['ref']
                 toBranch=info['pull_request']['base']['ref']
                 timeStamp=info['pull_request']['created_at']
-                timeStamp=datetime.strptime(timeStamp,"%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %I:%M:%S %p')
+                # timeStamp=datetime.strptime(timeStamp,"%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %I:%M:%S %p')
                 mongo.db.github.insert({
                     'request_id':requestId,
                     'author':author,
@@ -68,13 +68,13 @@ def receiver():
                 if info['pull_request']['merged'] == True :
                     
                     requestId=info['pull_request']['id']
-                    author=info['pull_request']['head']['label']
+                    author=info['pull_request']['merged_by']['login']
                     author=author.split(':')
                     author=author[0]
                     fromBranch=info['pull_request']['head']['ref']
                     toBranch=info['pull_request']['base']['ref']
-                    timeStamp=info['pull_request']['created_at']
-                    timeStamp=datetime.strptime(timeStamp,"%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %I:%M:%S %p')
+                    timeStamp=info['pull_request']['merged_at']
+                    # timeStamp=datetime.strptime(timeStamp,"%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %I:%M:%S %p')
                     mongo.db.github.insert({
                         'request_id':requestId,
                         'status':status,
@@ -93,8 +93,8 @@ def receiver():
                     author=author[0]
                     fromBranch=info['pull_request']['head']['ref']
                     toBranch=info['pull_request']['base']['ref']
-                    timeStamp=info['pull_request']['created_at']
-                    timeStamp=datetime.strptime(timeStamp,"%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %I:%M:%S %p')
+                    timeStamp=info['pull_request']['closed_at']
+                    #timeStamp=datetime.strptime(timeStamp,"%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %I:%M:%S %p')
                     mongo.db.github.insert({
                         'request_id':requestId,
                         'merged':False,
