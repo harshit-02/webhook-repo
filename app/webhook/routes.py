@@ -6,6 +6,7 @@ webhook = Blueprint('Webhook', __name__, url_prefix='/webhook')
 
 @webhook.route('/')
 def index():
+    '''fetching all the documents from the database'''
     data=mongo.db.github.find()    
 
     return render_template('index.html',data=data)
@@ -18,6 +19,8 @@ def receiver():
         action=request.headers.get('X-GitHub-Event')
         if action == "ping":
             return jsonify({'msg': 'Ok'})
+
+        # for push action
         if action == "push":
             info=request.get_json()
             
@@ -41,6 +44,8 @@ def receiver():
 
                 
                 return jsonify({'msg': 'Ok'}), 200
+
+        # for pull action
         if action == "pull_request":
             info=request.get_json()
             status=info['action']
@@ -63,7 +68,8 @@ def receiver():
                     'tobranch':toBranch
                 })
                 return jsonify({'msg': 'Ok'}), 200
-                
+
+            # for merge action    
             if status =='closed':
                 if info['pull_request']['merged'] == True :
                     
